@@ -1,6 +1,6 @@
 package net.quiltservertools.ledger.databases
 
-import com.github.quiltservertools.libs.com.uchuhimo.konf.ConfigSpec
+import com.uchuhimo.konf.ConfigSpec
 
 object DatabaseExtensionSpec : ConfigSpec("database_extensions") {
     val database by optional(Databases.SQLITE, "database")

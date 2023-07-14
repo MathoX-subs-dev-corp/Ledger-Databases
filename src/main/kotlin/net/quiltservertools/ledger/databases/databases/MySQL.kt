@@ -1,21 +1,22 @@
 package net.quiltservertools.ledger.databases.databases
 
 import com.github.quiltservertools.ledger.Ledger
-import net.minecraft.server.MinecraftServer
+import com.mysql.cj.jdbc.MysqlDataSource
 import net.quiltservertools.ledger.databases.DatabaseExtensionSpec
-import org.jetbrains.exposed.sql.Database
+import java.nio.file.Path
+import javax.sql.DataSource
 
 object MySQL : LedgerDatabase {
-    override fun getDatabase(server: MinecraftServer): Database {
+    override fun getDataSource(savePath: Path): DataSource {
         var url = "jdbc:mysql://${Ledger.config[DatabaseExtensionSpec.url]}?rewriteBatchedStatements=true"
         for (arg in Ledger.config[DatabaseExtensionSpec.properties]) {
             url = url.plus("&$arg")
         }
-        return Database.connect(
-            url = url,
-            user = Ledger.config[DatabaseExtensionSpec.userName],
-            password = Ledger.config[DatabaseExtensionSpec.password]
-        )
+        var db = MysqlDataSource()
+        db.setURL(url)
+        db.user = Ledger.config[DatabaseExtensionSpec.userName]
+        db.password = Ledger.config[DatabaseExtensionSpec.password]
+        return db
     }
 
     override fun getDatabaseIdentifier() = Ledger.identifier("mysql")
